@@ -1,98 +1,90 @@
-# KanbanOperation
+# KanbanOperation for Backpack
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
-[![The Whole Fruit Manifesto](https://img.shields.io/badge/writing%20standard-the%20whole%20fruit-brightgreen)](https://github.com/the-whole-fruit/manifesto)
 
-> **// TODO: customize this description and delete this line**
+This package provides Kanban board functionality for projects that use the [Backpack for Laravel](https://backpackforlaravel.com/) administration panel. 
 
-This package provides XXX functionality for projects that use the [Backpack for Laravel](https://backpackforlaravel.com/) administration panel. 
-
-More exactly, it adds X and Y so that you can easily do Z.
-
+It adds a Kanban view to your CRUD panels, allowing you to visualize and manage your data in a Kanban-style board. This is particularly useful for tracking the status of items across different stages or categories.
 
 ## Screenshots
 
-> **// TODO: add a screenshot and delete these lines;** 
-> to add a screenshot to a github markdown file, the easiest way is to
-> open an issue, upload the screenshot there with drag&drop, then close the issue;
-> you now have that image hosted on Github's servers; so you can then right-click 
-> the image to copy its URL, and use that URL wherever you want (for example... here)
-
-![Backpack Toggle Field Addon](https://via.placeholder.com/600x250?text=screenshot+needed)
-
+![Backpack Kanban Operation](https://github.com/user-attachments/assets/98588da8-6d89-4a9e-bcc4-14111806ecaa)
 
 ## Installation
 
-Via Composer
+You can install the package via composer:
 
-``` bash
+```bash
 composer require svenk/kanban-operation
 ```
 
 ## Usage
 
-> **// TODO: explain to your users how to use the functionality** this package provides; 
-> we've provided an example for a Backpack addon that provides a custom field
+To use the Kanban operation in your CrudController:
 
-To use the field this package provides, inside your custom CrudController do:
+1. Use the `KanbanOperation` trait in your controller:
 
 ```php
-$this->crud->addField([
-    'name' => 'agreed',
-    'label' => 'I agree to the terms and conditions',
-    'type' => 'new_field_name',
-    'view_namespace' => 'svenk.kanban-operation::fields',
-]);
+use Svenk\KanbanOperation\KanbanOperation;
+
+class YourCrudController extends CrudController
+{
+    use KanbanOperation;
+
+    // ...
+}
 ```
 
-Notice the ```view_namespace``` attribute - make sure that is exactly as above, to tell Backpack to load the field from this _addon package_, instead of assuming it's inside the _Backpack\CRUD package_.
 
+2. Configure the Kanban board:
 
-## Overwriting
+```php
+    protected function setupKanbanOperation()
+    {
+        CRUD::set('kanban.label_field', 'name'); //The field to display in the kanban card
+        CRUD::set('kanban.column_field', 'status'); //The field to use as the column
 
-> **// TODO: explain to your users how to overwrite the functionality this package provides;**
-> we've provided an example for a custom field
-
-If you need to change the field in any way, you can easily publish the file to your app, and modify that file any way you want. But please keep in mind that you will not be getting any updates.
-
-**Step 1.** Copy-paste the blade file to your directory:
-```bash
-# create the fields directory if it's not already there
-mkdir -p resources/views/vendor/backpack/crud/fields
-
-# copy the blade file inside the folder we created above
-cp -i vendor/svenk/kanban-operation/src/resources/views/fields/field_name.blade.php resources/views/vendor/backpack/crud/fields/field_name.blade.php
+        CRUD::setOperationSetting('columns', [
+            'pending' => [
+                'label' => 'Pending',
+                'flow' => ['in_progress', 'backlog'], //The columns that can be moved to
+            ],
+            'in_progress' => [
+                'label' => 'In Progress',
+                'flow' => ['done', 'pending'],
+            ],
+            'done' => [
+                'label' => 'Done',
+                'flow' => null, //Can be moved to any column
+            ],
+        ]);
+    }
 ```
 
-**Step 2.** Remove the vendor namespace wherever you've used the field:
-```diff
-$this->crud->addField([
-    'name' => 'agreed',
-    'type' => 'toggle',
-    'label' => 'I agree to the terms and conditions',
--   'view_namespace' => 'svenk.kanban-operation::fields'
-]);
-```
+This sets up a Kanban board with three columns (To Do, In Progress, Done), using the `status` field to determine which column an item belongs to, and the `title` field as the label for each item.
 
-**Step 3.** Uninstall this package. Since it only provides one file, and you're no longer using that file, it makes no sense to have the package installed:
-```bash
-composer remove svenk/kanban-operation
-```
+## Customization
+
+You can customize various aspects of the Kanban board:
+
+- **Columns**: Define your own columns and their labels.
+- **Item Fields**: Choose which model fields to use for the column and label.
+- **Permissions**: Control access to the Kanban view and item updates.
 
 ## Change log
 
-Changes are documented here on Github. Please see the [Releases tab](https://github.com/svenk/kanban-operation/releases).
+Please see the [Releases tab](https://github.com/svenk/kanban-operation/releases) for more information on what has changed recently.
 
 ## Testing
 
-``` bash
+```bash
 composer test
 ```
 
 ## Contributing
 
-Please see [contributing.md](contributing.md) for a todolist and howtos.
+Please see [contributing.md](contributing.md) for details and a todolist.
 
 ## Security
 
@@ -109,11 +101,10 @@ This project was released under MIT, so you can install it on top of any Backpac
 
 However, please note that you do need Backpack installed, so you need to also abide by its [YUMMY License](https://github.com/Laravel-Backpack/CRUD/blob/master/LICENSE.md). That means in production you'll need a Backpack license code. You can get a free one for non-commercial use (or a paid one for commercial use) on [backpackforlaravel.com](https://backpackforlaravel.com).
 
-
 [ico-version]: https://img.shields.io/packagist/v/svenk/kanban-operation.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/svenk/kanban-operation.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/svenk/kanban-operation
 [link-downloads]: https://packagist.org/packages/svenk/kanban-operation
-[link-author]: https://github.com/svenk
+[link-author]: https://github.com/svenk2002
 [link-contributors]: ../../contributors
