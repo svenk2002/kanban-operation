@@ -1,0 +1,47 @@
+{
+    "name": "svenk/kanban-operation",
+    "description": "Kanban operation for laravel Backpack",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "SvenK2002",
+            "email": "sven.kolthof19@gmail.com",
+            "homepage": "http://author.com"
+        }
+    ],
+    "homepage": "https://github.com/svenk/kanban-operation",
+    "keywords": [
+        "Laravel",
+        "Backpack",
+        "Backpack for Laravel",
+        "Backpack Addon",
+        "KanbanOperation"
+    ],
+    "require": {
+        "backpack/crud": "^6.7"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~9.0",
+        "orchestra/testbench": "~5|~6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Svenk\\KanbanOperation\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Svenk\\KanbanOperation\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --testdox"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Svenk\\KanbanOperation\\AddonServiceProvider"
+            ]
+        }
+    }
+}
